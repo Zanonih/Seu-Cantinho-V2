@@ -1710,7 +1710,10 @@ h2.section-title {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
+  background: var(--cream); /* navegador sem suporte a color-mix() cai aqui — opaco, seguro */
+  background: color-mix(in srgb, var(--cream) 92%, transparent);
+  backdrop-filter: blur(36px);
+  -webkit-backdrop-filter: blur(36px);
   padding: 1.5rem;
   transition: opacity 0.5s ease;
 }
