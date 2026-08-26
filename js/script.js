@@ -168,6 +168,89 @@ document.addEventListener("DOMContentLoaded", () => {
 // O tema em si já é aplicado o mais cedo possível por um script inline no
 // <head> de cada página (pra não "piscar" claro antes de virar escuro).
 // Essa função só cuida do botão e de guardar a escolha.
+// ---- Fundo Aurora (canvas com manchas de luz nas cores do site) ----
+// Lê as variáveis de cor direto do CSS, então acompanha o tema claro/escuro
+// sem precisar de configuração extra. Respeita prefers-reduced-motion.
+function initAuroraBackground(canvasId = "aurora-bg") {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  const reduzMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Cada mancha: cor (lida da variável CSS), posição relativa (0-1) e raio relativo.
+  const manchas = [
+    { varName: "--rose",  x: 0.20, y: 0.28, raio: 0.55, velX: 0.021, velY: 0.017, fase: 0 },
+    { varName: "--gold",  x: 0.72, y: 0.55, raio: 0.50, velX: 0.017, velY: 0.023, fase: 2 },
+    { varName: "--sage",  x: 0.45, y: 0.80, raio: 0.45, velX: 0.019, velY: 0.015, fase: 4 },
+    { varName: "--wine",  x: 0.85, y: 0.18, raio: 0.48, velX: 0.015, velY: 0.019, fase: 1 },
+  ];
+
+  function corDaVariavel(nome) {
+    return getComputedStyle(document.documentElement).getPropertyValue(nome).trim() || "#C97B84";
+  }
+
+  function ajustarTamanho() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    canvas.style.width = window.innerWidth + "px";
+    canvas.style.height = window.innerHeight + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function desenharQuadro(t) {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    ctx.clearRect(0, 0, w, h);
+    ctx.globalCompositeOperation = "lighter";
+
+    manchas.forEach((m) => {
+      // Movimento suave tipo "figura 8", sem parar nem repetir de forma óbvia
+      const cx = (m.x + Math.sin(t * m.velX + m.fase) * 0.08) * w;
+      const cy = (m.y + Math.cos(t * m.velY + m.fase) * 0.08) * h;
+      const raio = m.raio * Math.max(w, h) * 0.6;
+
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, raio);
+      grad.addColorStop(0, corDaVariavel(m.varName) + "59"); // ~35% opacidade
+      grad.addColorStop(1, corDaVariavel(m.varName) + "00");
+
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, raio, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    ctx.globalCompositeOperation = "source-over";
+  }
+
+  ajustarTamanho();
+  window.addEventListener("resize", ajustarTamanho);
+
+  if (reduzMovimento) {
+    // Sem animação: desenha um único quadro estático e para por aí.
+    desenharQuadro(0);
+    return;
+  }
+
+  let quadro;
+  function loop(agora) {
+    desenharQuadro(agora / 1000);
+    quadro = requestAnimationFrame(loop);
+  }
+  quadro = requestAnimationFrame(loop);
+
+  // Se a aba for pra segundo plano, evita gastar CPU à toa.
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      cancelAnimationFrame(quadro);
+    } else if (!reduzMovimento) {
+      quadro = requestAnimationFrame(loop);
+    }
+  });
+}
+
 function initThemeToggle(buttonId = "theme-toggle") {
   const botao = document.getElementById(buttonId);
   if (!botao) return;
