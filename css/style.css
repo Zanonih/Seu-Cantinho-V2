@@ -63,7 +63,7 @@ body {
   * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
 }
 
-/* -------- Fundo Aurora (só na página inicial) -------- */
+/* -------- Fundo Aurora (site inteiro) -------- */
 .aurora-bg {
   position: fixed;
   inset: 0;

@@ -171,6 +171,9 @@ document.addEventListener("DOMContentLoaded", () => {
 // ---- Fundo Aurora (canvas com manchas de luz nas cores do site) ----
 // Lê as variáveis de cor direto do CSS, então acompanha o tema claro/escuro
 // sem precisar de configuração extra. Respeita prefers-reduced-motion.
+// Roda uma única vez (igual música/bichinhos): o <canvas> mora fora da
+// área trocada pela navegação entre páginas, então nunca reinicia nem
+// pisca ao clicar num link do menu.
 function initAuroraBackground(canvasId = "aurora-bg") {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
@@ -337,12 +340,16 @@ function initTimeline(containerId, items) {
     }
   });
 
-  document.addEventListener("keydown", (e) => {
+  const fecharLightboxComEsc = (e) => {
     if (e.key === "Escape") {
       lightbox.classList.remove("is-open");
       lightboxImg.src = "";
     }
-  });
+  };
+  document.addEventListener("keydown", fecharLightboxComEsc);
+  if (typeof window.aoLimparPagina === "function") {
+    window.aoLimparPagina(() => document.removeEventListener("keydown", fecharLightboxComEsc));
+  }
 }
 
 // ---- Roleta / caça-níquel (sorteio de filme ou receita) ----
@@ -581,6 +588,10 @@ function initBichinhosGaleria(gridSelector, dados) {
   const cards = document.querySelectorAll(gridSelector);
   if (!cards.length || !dados) return;
 
+  // remove overlays de uma visita anterior a esta mesma página (SPA), pra
+  // não ir empilhando cópias toda vez que a pessoa volta pra cá
+  document.querySelectorAll(".pet-modal-overlay").forEach((el) => el.remove());
+
   // ---- monta as duas janelas (álbum e foto grande), uma vez só ----
   const albumOverlay = document.createElement("div");
   albumOverlay.className = "pet-modal-overlay";
@@ -673,7 +684,7 @@ function initBichinhosGaleria(gridSelector, dados) {
   lightboxOverlay.querySelector(".pet-lightbox-prev").addEventListener("click", () => mudarFoto(-1));
   lightboxOverlay.querySelector(".pet-lightbox-next").addEventListener("click", () => mudarFoto(1));
 
-  document.addEventListener("keydown", (e) => {
+  const handleTecladoGaleria = (e) => {
     if (e.key === "Escape") {
       if (lightboxOverlay.classList.contains("is-open")) fecharLightbox();
       else if (albumOverlay.classList.contains("is-open")) fecharAlbum();
@@ -682,7 +693,16 @@ function initBichinhosGaleria(gridSelector, dados) {
       if (e.key === "ArrowLeft") mudarFoto(-1);
       if (e.key === "ArrowRight") mudarFoto(1);
     }
-  });
+  };
+  document.addEventListener("keydown", handleTecladoGaleria);
+
+  if (typeof window.aoLimparPagina === "function") {
+    window.aoLimparPagina(() => {
+      document.removeEventListener("keydown", handleTecladoGaleria);
+      albumOverlay.remove();
+      lightboxOverlay.remove();
+    });
+  }
 }
 
 // ---- Lista de desejos (marca e desmarca, guardado no navegador) ----
@@ -840,7 +860,10 @@ function initTimeCapsule(dataAberturaISO) {
   }
 
   atualizar();
-  setInterval(atualizar, 1000);
+  const capsulaIntervalId = setInterval(atualizar, 1000);
+  if (typeof window.aoLimparPagina === "function") {
+    window.aoLimparPagina(() => clearInterval(capsulaIntervalId));
+  }
 }
 
 // ---- Página de conquistas: mostra os desejos já marcados como troféus,
