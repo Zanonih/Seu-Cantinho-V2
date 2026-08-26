@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  // Aplica o tema (claro/escuro) o mais cedo possível, antes da página
+  // pintar na tela, pra não dar aquele "flash" da cor errada.
+  try {
+    var temaSalvo = localStorage.getItem("cantinho:tema");
+    if (temaSalvo === "dark") document.documentElement.setAttribute("data-theme", "dark");
+  } catch (e) { /* localStorage bloqueado — só usa o tema padrão */ }
+</script>
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
+<link rel="icon" href="img/favicon/favicon.ico">
+<title>Para Você</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="inicio">
+  <div id="site-lock" class="site-lock">
+    <div class="site-lock-card">
+      <p class="site-lock-question">
+        Não fala, mas parece entender tudo. Posta-se sobre as grades, observando o universo como se buscasse alguma verdade escondida. Qual o seu nome?
+      </p>
+      <form id="site-lock-form" class="site-lock-form" autocomplete="off">
+        <input type="text" id="site-lock-input" class="site-lock-input" placeholder="Sua resposta..." autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button type="submit" class="site-lock-button">Entrar 💌</button>
+      </form>
+      <p id="site-lock-erro" class="site-lock-erro" hidden>Não foi essa... tenta de novo 🐾</p>
+    </div>
+  </div>
+
+
+<header class="site-header">
+  <p class="site-subtitle">seu cantinho</p>
+  <h1 class="site-title">Para Você</h1>
+
+  <p class="love-counter-caption">juntos há:</p>
+  <div class="love-counter" id="love-counter" aria-label="Tempo juntos">
+    <div class="love-counter-item"><span class="love-counter-value" id="lc-anos">0</span><span class="love-counter-label">anos</span></div>
+    <div class="love-counter-item"><span class="love-counter-value" id="lc-meses">0</span><span class="love-counter-label">meses</span></div>
+    <div class="love-counter-item"><span class="love-counter-value" id="lc-dias">0</span><span class="love-counter-label">dias</span></div>
+    <div class="love-counter-item"><span class="love-counter-value" id="lc-horas">00</span><span class="love-counter-label">h</span></div>
+    <div class="love-counter-item"><span class="love-counter-value" id="lc-minutos">00</span><span class="love-counter-label">min</span></div>
+    <div class="love-counter-item"><span class="love-counter-value" id="lc-segundos">00</span><span class="love-counter-label">seg</span></div>
+  </div>
+
+  <nav aria-label="Navegação principal">
+    <ul class="stamp-nav">
+      <li><a href="index.html" data-page="inicio"><span class="icon">🏠</span>Início</a></li>
+      <li><a href="album.html" data-page="album"><span class="icon">🖼️</span>Álbum</a></li>
+      <li><a href="bichinhos.html" data-page="bichinhos"><span class="icon">🐾</span>Bebês</a></li>
+      <li><a href="musica.html" data-page="musica"><span class="icon">🎵</span>Música</a></li>
+      <li><a href="filmes.html" data-page="filmes"><span class="icon">🎬</span>Assistir</a></li>
+      <li><a href="receitas.html" data-page="receitas"><span class="icon">🍳</span>Receitas</a></li>
+      <li><a href="desejos.html" data-page="desejos"><span class="icon">✨</span>Desejos</a></li>
+      <li><a href="conquistas.html" data-page="conquistas"><span class="icon">🏆</span>Conquistas</a></li>
+      <li><a href="capsula.html" data-page="capsula"><span class="icon">🔒</span>Cápsula</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <section class="card letter-card" id="letter-card">
+
+    <div class="letter-content" id="letter-content" aria-hidden="true">
+      <p class="letter-greeting">Feliz aniversário, meu amor 💌</p>
+      <p class="lede" style="margin-top:0;">
+        Espero que seu dia seja incrível, pode ter certeza que eu vou fazer de tudo
+        pra que você tenha o melhor aniversário da sua vida. 
+        É muito bom partilhar a vida contigo. Tenho muito orgulho de quem você é, 
+        e de quem você está se tornando, nunca deixe nada te abalar, ou te colocar pra baixo, 
+        você é mais forte que qualquer coisa e você pode tudo o que quiser.
+      </p>
+      <p class="lede">
+        Parabéns pelos seus 21 anos, que esse novo ciclo seja cheio de coisas boas, risadas bobas, 
+        viagens, muito dinheiro e muito, muito amor. Obrigado por existir do jeitinho que você é. 
+        Eu te amo, te sinto e te vejo, hoje e sempre.♥️
+      </p>
+      <p class="letter-signature">Assinado,<br>Seu momo</p>
+    </div>
+
+    <div class="envelope-overlay" id="envelope-overlay">
+      <div class="envelope-pocket"></div>
+      <div class="envelope-flap" id="envelope-flap"></div>
+      <button type="button" class="seal-button" id="seal-button" aria-expanded="false" aria-controls="letter-content" aria-label="Abrir a carta">
+        <img src="img/selo-vz.png" alt="" class="seal-img" draggable="false">
+      </button>
+    </div>
+
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p class="footer-line">Te amo, Te sinto e Te vejo ♥️</p>
+  <a class="footer-coords" href="https://www.google.com/maps?q=-19.932596,-43.938312" target="_blank" rel="noopener">
+    📍 -19.932596, -43.938312
+  </a>
+</footer>
+
+<script src="js/script.js"></script>
+<script>
+  initSiteLock("Maia");
+</script>
+<audio id="bgm-audio" src="audio/musica-fundo.mp3" preload="auto" loop></audio>
+<button type="button" id="bgm-toggle" class="bgm-toggle" aria-pressed="false" aria-label="Tocar música de fundo">▶️</button>
+<button type="button" id="theme-toggle" class="theme-toggle">🌙</button>
+<script>
+  initBackgroundMusic(13, 0.4);
+</script>
+<script>
+  initThemeToggle();
+</script>
+<script>
+  initLetterSeal();
+  initLoveCounter("2025-06-19T23:35:00");
+</script>
+<script src="js/pets-data.js"></script>
+<script>
+  initPetScene(PETS_BICHINHOS);
+</script>
+
+</body>
+</html>
